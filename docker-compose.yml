@@ -1,0 +1,32 @@
+version: '3'
+services:
+
+  nginx:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - 80:80
+      - 443:443
+
+  service1:
+    image: halverneus/static-file-server:latest
+    environment:
+      - VIRTUAL_HOST=service1.mydomain.com
+      - FOLDER=/app
+    volumes:
+      - /srv/server-service1:/app
+    expose:
+      - 8080
+
+ service2:
+     image: unknownpgr/service2:latest
+     environment:
+       - VIRTUAL_HOST=service2.mydomain.com
+       - FOLDER=/app
+     volumes:
+       - /srv/server-service2:/app
+       - /var/log:/app/log
+     expose:
+       - 80
+     entrypoint: ['node','/app/index.js']
